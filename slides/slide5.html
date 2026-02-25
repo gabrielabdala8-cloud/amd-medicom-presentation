@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0F172A; font-family: 'JetBrains Mono', monospace; color: #F8FAFC; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #0F172A;
+            padding: 40px 40px 20px; /* keep top padding, reduce bottom padding to reduce overall height */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        header {
+            border-bottom: 2px solid #38BDF8;
+            padding-bottom: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            color: #F8FAFC;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #94A3B8;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 36px;
+            flex-grow: 1;
+        }
+
+        /* Action List */
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .action-card {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            border-left: 4px solid #38BDF8;
+        }
+        .action-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38BDF8;
+            opacity: 0.5;
+        }
+        .action-content h3 {
+            font-size: 16px;
+            color: #F8FAFC;
+            margin-bottom: 5px;
+        }
+        .action-content p {
+            font-size: 13px;
+            color: #94A3B8;
+            line-height: 1.4;
+        }
+
+        /* Scorecard */
+        .scorecard {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+        .score-title {
+            font-size: 14px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+        }
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .score-label {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #F8FAFC;
+        }
+        .score-sub {
+            font-size: 12px;
+            color: #EF4444; /* Red for risk */
+        }
+        .recovery-value {
+            color: #10B981; /* Green for money back */
+        }
+
+        /* Decorative */
+        .priority-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <header>
+            <h1>Recommendations & Action Plan</h1>
+            <div class="subtitle">Strategic Actions to Eliminate Billing Discrepancies</div>
+        </header>
+
+        <div class="content-grid">
+            <!-- Left: Action List -->
+            <div class="action-list">
+                <div class="action-card" style="border-left-color: #EF4444;">
+                    <div class="action-number">01</div>
+                    <div class="action-content">
+                        <h3>Immediate UPS Billing Audit <span class="priority-badge">HIGH PRIORITY</span></h3>
+                        <p>Initiate formal dispute for top 20 overcharged orders. UPS accounts for 87.7% of overcharges. Focus on Order #1486238838 ($3,697 discrepancy).</p>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-number">02</div>
+                    <div class="action-content">
+                        <h3>Implement Real-Time Reconciliation</h3>
+                        <p>Deploy automated comparison between Quoted vs. Billed price. Flag any discrepancy >5% or >$10 CAD for immediate review before payment.</p>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-number">03</div>
+                    <div class="action-content">
+                        <h3>Renegotiate UPS Deferred Rates</h3>
+                        <p>Deferred service shows a 42.8% discrepancy rate on US-bound lanes. Negotiate caps on post-booking surcharges for international parcels.</p>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-number">04</div>
+                    <div class="action-content">
+                        <h3>Leverage High-Margin Domestic Lanes</h3>
+                        <p>Increase volume on QC → QC (77.8% margin) and QC → ON (69.0% margin). Explore Canada Post or Purolator for these stable routes.</p>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-number">05</div>
+                    <div class="action-content">
+                        <h3>Monitor Monday Shipment Billing</h3>
+                        <p>Monday generates the highest discrepancy ($5,083). Implement enhanced review for Monday invoices to catch weekend surcharge errors.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Scorecard -->
+            <div class="scorecard">
+                <div class="score-title">Impact Scorecard</div>
+                
+                <div class="score-item">
+                    <span class="score-label">Total Recoverable Overcharges</span>
+                    <span class="score-value recovery-value">~$13,878</span>
+                    <span class="score-sub" style="color: #10B981;">Direct Bottom-Line Impact</span>
+                </div>
+
+                <div class="score-item">
+                    <span class="score-label">Highest Risk Carrier</span>
+                    <span class="score-value">UPS</span>
+                    <span class="score-sub">42.8% Discrepancy Rate</span>
+                </div>
+
+                <div class="score-item">
+                    <span class="score-label">Highest Risk Lane</span>
+                    <span class="score-value">QC → OH</span>
+                    <span class="score-sub">$5,301 Total Discrepancy</span>
+                </div>
+
+                <div class="score-item">
+                    <span class="score-label">Audit Target</span>
+                    <span class="score-value">Top 20 Orders</span>
+                    <span class="score-sub">Accounts for &gt;$16k variance</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

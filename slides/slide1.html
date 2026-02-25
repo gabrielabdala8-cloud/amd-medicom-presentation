@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0F172A; font-family: 'JetBrains Mono', monospace; color: #F8FAFC; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #0F172A;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        header {
+            border-bottom: 2px solid #38BDF8;
+            padding-bottom: 20px;
+        }
+        h1 {
+            font-size: 36px;
+            color: #F8FAFC;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #94A3B8;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 30px;
+            flex-grow: 1;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .kpi-card {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-left: 4px solid #38BDF8;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .kpi-card.alert { border-left-color: #EF4444; } /* Red for bad stats */
+        .kpi-card.success { border-left-color: #10B981; } /* Green for good stats */
+        
+        .kpi-label {
+            font-size: 14px;
+            color: #94A3B8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #F8FAFC;
+        }
+        .kpi-sub {
+            font-size: 12px;
+            color: #38BDF8;
+            margin-top: 5px;
+        }
+
+        /* Right Column */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-container {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .insight-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #38BDF8;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #E2E8F0;
+        }
+        .insight-title {
+            color: #38BDF8;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Decorative elements */
+        .neon-line {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #38BDF8);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <header>
+            <h1>Executive Summary — $13,878 Net Overcharge</h1>
+            <div class="subtitle">
+                <span>AMD MEDICOM INC. (MED) | Shipping Analytics Report</span>
+                <span>Data Period: Mar 2025 – Feb 2026</span>
+            </div>
+        </header>
+
+        <div class="content-grid">
+            <!-- Left: KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-label"><i class="fas fa-box"></i> Total Orders</span>
+                    <span class="kpi-value">1,540</span>
+                    <span class="kpi-sub">100% of dataset</span>
+                </div>
+                <div class="kpi-card alert">
+                    <span class="kpi-label"><i class="fas fa-exclamation-triangle"></i> Net Discrepancy</span>
+                    <span class="kpi-value">+$13,878</span>
+                    <span class="kpi-sub" style="color: #EF4444;">Overcharged</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label"><i class="fas fa-file-invoice-dollar"></i> Quoted Price</span>
+                    <span class="kpi-value">$48,562</span>
+                    <span class="kpi-sub">Platform Quote (CAD)</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label"><i class="fas fa-money-bill-wave"></i> Billed Price</span>
+                    <span class="kpi-value">$62,440</span>
+                    <span class="kpi-sub">Actual Billed (CAD)</span>
+                </div>
+                <div class="kpi-card alert">
+                    <span class="kpi-label"><i class="fas fa-percentage"></i> Discrepancy Rate</span>
+                    <span class="kpi-value">32.3%</span>
+                    <span class="kpi-sub" style="color: #EF4444;">498 Orders Affected</span>
+                </div>
+                <div class="kpi-card success">
+                    <span class="kpi-label"><i class="fas fa-chart-line"></i> Avg Margin</span>
+                    <span class="kpi-value">43.5%</span>
+                    <span class="kpi-sub" style="color: #10B981;">Healthy Profitability</span>
+                </div>
+            </div>
+
+            <!-- Right: Chart & Insight -->
+            <div class="right-col">
+                <div class="chart-container">
+                    <span class="kpi-label" style="align-self: flex-start;">Billing Status Breakdown</span>
+                    <div style="height: 220px; width: 100%; display: flex; justify-content: center;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span class="insight-title">KEY INSIGHT</span>
+                    Of 1,540 shipments, nearly one-third (32.3%) showed a billing discrepancy. The net impact is a <strong>$13,878 overcharge</strong>. While 67.7% of orders matched exactly, the 24.3% that were overcharged created a significant financial gap, with the largest single overcharge reaching $3,697.59.
+                </div>
+            </div>
+        </div>
+        
+        <div class="neon-line"></div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Match', 'Overcharged', 'Undercharged'],
+                datasets: [{
+                    data: [1042, 374, 124],
+                    backgroundColor: ['#10B981', '#EF4444', '#F59E0B'], // Green, Red, Orange
+                    borderColor: '#1E293B',
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#94A3B8',
+                            font: { family: 'JetBrains Mono', size: 12 },
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+    </script>
+</body>
+</html>

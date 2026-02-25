@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0F172A; font-family: 'JetBrains Mono', monospace; color: #F8FAFC; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #0F172A;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        header {
+            border-bottom: 2px solid #38BDF8;
+            padding-bottom: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            color: #F8FAFC;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #94A3B8;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 40px;
+            flex-grow: 1;
+        }
+
+        /* Left Column */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .table-container {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .chart-title {
+            color: #94A3B8;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th {
+            text-align: left;
+            padding: 10px;
+            color: #38BDF8;
+            border-bottom: 2px solid #334155;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #334155;
+            color: #E2E8F0;
+        }
+        tr:last-child td { border-bottom: none; }
+        .highlight-row {
+            background: rgba(56, 189, 248, 0.1);
+            font-weight: 700;
+        }
+
+        /* Right Column */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-box {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .insight-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid #38BDF8;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #E2E8F0;
+        }
+        .insight-header {
+            color: #38BDF8;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <header>
+            <h1>Transport & Lane Performance</h1>
+            <div class="subtitle">PARCEL Dominates Volume | QC→BC & QC→ON Lead Lanes</div>
+        </header>
+
+        <div class="content-grid">
+            <!-- Left: Transport Table -->
+            <div class="left-col">
+                <div class="table-container">
+                    <div class="chart-title">Transport Type KPIs</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Orders</th>
+                                <th>Billed (CAD)</th>
+                                <th>Disc %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight-row">
+                                <td>PARCEL</td>
+                                <td>1,361</td>
+                                <td>$57,250</td>
+                                <td style="color: #EF4444;">+31.0%</td>
+                            </tr>
+                            <tr>
+                                <td>PAK</td>
+                                <td>158</td>
+                                <td>$4,430</td>
+                                <td style="color: #F59E0B;">+8.3%</td>
+                            </tr>
+                            <tr>
+                                <td>ENVELOPE</td>
+                                <td>20</td>
+                                <td>$741</td>
+                                <td style="color: #10B981;">-2.3%</td>
+                            </tr>
+                            <tr>
+                                <td>BOX</td>
+                                <td>1</td>
+                                <td>$20</td>
+                                <td>0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="insight-box">
+                    <span class="insight-header">KEY INSIGHT</span>
+                    <strong>PARCEL</strong> accounts for 91.7% of revenue but carries a high 31% discrepancy rate. <strong>QC → OH</strong> (US-bound) has the highest average billed price ($318) and a massive $5,301 discrepancy, driven by cross-border surcharges.
+                </div>
+            </div>
+
+            <!-- Right: Lane Chart -->
+            <div class="right-col">
+                <div class="chart-box">
+                    <div class="chart-title">Top 8 Lanes by Order Volume</div>
+                    <div style="height: 350px; width: 100%;">
+                        <canvas id="laneChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('laneChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['QC -> BC', 'QC -> ON', 'QC -> AB', 'QC -> QC', 'QC -> MB', 'QC -> NS', 'QC -> NB', 'QC -> SK'],
+                datasets: [{
+                    label: 'Number of Orders',
+                    data: [366, 362, 197, 169, 79, 43, 34, 34],
+                    backgroundColor: '#38BDF8',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94A3B8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#F8FAFC', font: { family: 'JetBrains Mono' } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

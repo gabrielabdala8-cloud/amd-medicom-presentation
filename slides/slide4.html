@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0F172A; font-family: 'JetBrains Mono', monospace; color: #F8FAFC; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #0F172A;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* slightly reduced to save vertical space */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        header {
+            border-bottom: 2px solid #38BDF8;
+            padding-bottom: 15px;
+        }
+        h1 {
+            font-size: 32px;
+            color: #F8FAFC;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #94A3B8;
+        }
+
+        /* Main Content */
+        .top-row {
+            height: 255px;
+            display: flex;
+            gap: 25px;
+        }
+        .bottom-row {
+            flex-grow: 1;
+            display: flex;
+            gap: 25px;
+        }
+
+        /* Cards */
+        .card {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 12px; /* reduced from 20 to save vertical space */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        .card-title {
+            color: #94A3B8;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Stats Box */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px; /* tightened spacing */
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px; /* reduced */
+            border-radius: 6px;
+            border-left: 3px solid #38BDF8;
+        }
+        .stat-label { font-size: 12px; color: #94A3B8; display: block; margin-bottom: 5px; }
+        .stat-val { font-size: 20px; font-weight: 700; color: #F8FAFC; }
+        .stat-sub { font-size: 11px; color: #38BDF8; margin-top: 3px; display: block; }
+
+        /* Insight */
+        .insight-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #38BDF8;
+            border-radius: 8px;
+            padding: 10px; /* reduced */
+            font-size: 13px;
+            line-height: 1.4; /* slightly tighter */
+            color: #E2E8F0;
+            margin-top: 8px; /* avoid large auto spacing */
+        }
+        .insight-header { color: #38BDF8; font-weight: 700; margin-bottom: 5px; display: block; }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <header>
+            <h1>Operational KPIs</h1>
+            <div class="subtitle">Monday Peak Discrepancy | 95% Canada-Origin | Steady Growth</div>
+        </header>
+
+        <!-- Top Row: Monthly Trend -->
+        <div class="top-row">
+            <div class="card" style="flex: 2;">
+                <div class="card-title">Monthly Order Volume Trend (Mar '25 - Feb '26)</div>
+                <div style="flex-grow: 1; position: relative;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="card" style="flex: 1;">
+                <div class="card-title">Geographic Split</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Origin: Canada</span>
+                        <span class="stat-val">99.0%</span>
+                        <span class="stat-sub">1,525 Orders</span>
+                    </div>
+                    <div class="stat-item" style="border-color: #EF4444;">
+                        <span class="stat-label">Dest: USA</span>
+                        <span class="stat-val">29.6%</span>
+                        <span class="stat-sub">of Revenue (10% Vol)</span>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <span class="insight-header">CROSS-BORDER RISK</span>
+                    US-bound shipments are 10% of volume but drive 29.6% of revenue — high-priority audit target for surcharge risk.
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Day of Week -->
+        <div class="bottom-row">
+            <div class="card" style="width: 100%;">
+                <div class="card-title">Day of Week Performance: Orders vs. Discrepancy (CAD)</div>
+                <div style="flex-grow: 1; position: relative;">
+                    <canvas id="dayChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Monthly Chart
+        const ctxMonth = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(ctxMonth, {
+            type: 'line',
+            data: {
+                labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                datasets: [{
+                    label: 'Order Volume',
+                    data: [23, 79, 94, 127, 143, 107, 157, 327, 154, 140, 187, 114],
+                    borderColor: '#38BDF8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#0F172A',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } },
+                    y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } }
+                }
+            }
+        });
+
+        // Day Chart
+        const ctxDay = document.getElementById('dayChart').getContext('2d');
+        new Chart(ctxDay, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [
+                    {
+                        label: 'Orders',
+                        data: [301, 293, 324, 327, 294],
+                        backgroundColor: '#94A3B8',
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'Discrepancy (CAD)',
+                        data: [5083, 1662, 3436, 1711, 1986],
+                        backgroundColor: '#EF4444',
+                        type: 'line',
+                        borderColor: '#EF4444',
+                        borderWidth: 2,
+                        yAxisID: 'y1',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'top', labels: { color: '#F8FAFC' } } 
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#F8FAFC' } },
+                    y: { 
+                        type: 'linear', display: true, position: 'left', 
+                        grid: { color: '#334155' }, ticks: { color: '#94A3B8' },
+                        title: { display: true, text: 'Orders', color: '#94A3B8' }
+                    },
+                    y1: { 
+                        type: 'linear', display: true, position: 'right', 
+                        grid: { display: false }, ticks: { color: '#EF4444' },
+                        title: { display: true, text: 'Discrepancy ($)', color: '#EF4444' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

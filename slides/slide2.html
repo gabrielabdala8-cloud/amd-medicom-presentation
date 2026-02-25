@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0F172A; font-family: 'JetBrains Mono', monospace; color: #F8FAFC; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #0F172A;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+/* Header */
+        header {
+            border-bottom: 2px solid #38BDF8;
+            padding-bottom: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            color: #F8FAFC;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #94A3B8;
+        }
+/* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            flex-grow: 1;
+        }
+/* Table Styling */
+        .table-container {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            color: #38BDF8;
+            border-bottom: 2px solid #334155;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            color: #E2E8F0;
+        }
+        tr:last-child td { border-bottom: none; }
+        .highlight-row {
+            background: rgba(239, 68, 68, 0.1); /* Red tint for UPS */
+            font-weight: 700;
+        }
+        .positive { color: #EF4444; } /* Overcharge is bad (Red) */
+        .negative { color: #10B981; } /* Undercharge is good (Green) */
+/* Right Column */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-box {
+            background: #1E293B;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-title {
+            color: #94A3B8;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .insight-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid #38BDF8;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #E2E8F0;
+        }
+        .insight-header {
+            color: #38BDF8;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body><div class="slide-container">
+        <header>
+            <h1>Billing Discrepancy Deep Dive</h1>
+            <div class="subtitle">Carrier-Level &amp; Service-Level Breakdown — UPS Drives 87.7% of Overcharges</div>
+        </header>
+<div class="content-grid">
+            <!-- Left: Carrier Table -->
+            <div class="table-container">
+                <div class="chart-title">Carrier Performance Matrix</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Carrier</th>
+                            <th>Orders</th>
+                            <th>Total Discrepancy</th>
+                            <th>Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td>UPS</td>
+                            <td>1,139</td>
+                            <td class="positive">+$12,170</td>
+                            <td class="positive">+42.8%</td>
+                        </tr>
+                        <tr>
+                            <td>Fedex</td>
+                            <td>246</td>
+                            <td class="positive">+$1,669</td>
+                            <td class="positive">+11.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Purolator</td>
+                            <td>96</td>
+                            <td class="positive">+$152</td>
+                            <td class="positive">+5.3%</td>
+                        </tr>
+                        <tr>
+                            <td>Midland Courrier</td>
+                            <td>35</td>
+                            <td class="positive">+$65</td>
+                            <td class="positive">+8.3%</td>
+                        </tr>
+                        <tr>
+                            <td>Canpar</td>
+                            <td>10</td>
+                            <td class="positive">+$9</td>
+                            <td class="positive">+2.3%</td>
+                        </tr>
+                        <tr>
+                            <td>DHL</td>
+                            <td>6</td>
+                            <td class="negative">-$187</td>
+                            <td class="negative">-20.4%</td>
+                        </tr>
+                        <tr>
+                            <td>Canada Post</td>
+                            <td>4</td>
+                            <td>$0</td>
+                            <td>0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+<!-- Right: Service Type Chart & Insight -->
+            <div class="right-col">
+                <div class="chart-box">
+                    <div class="chart-title">Discrepancy by Service Type (CAD)</div>
+                    <div style="height: 210px; width: 100%;">
+                        <canvas id="serviceChart" width="424" height="210" style="display: block; box-sizing: border-box; height: 210px; width: 424px; transform: translate(0px, 5.5px);"></canvas>
+                    </div>
+                </div>
+<div class="insight-box">
+                    <span class="insight-header">CRITICAL FINDING</span>
+                    UPS alone accounts for <strong>$12,170</strong> of the total overcharge. The <strong>Deferred</strong> service type carries the highest average overcharge per shipment ($28.72), suggesting systematic post-booking surcharges on international parcels. DHL is the only carrier consistently billing <em>below</em> the quoted price.
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+        const ctx = document.getElementById('serviceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Ground', 'Deferred', 'Express'],
+                datasets: [{
+                    label: 'Total Overcharge (CAD)',
+                    data: [6927, 4767, 2184],
+                    backgroundColor: ['#38BDF8', '#EF4444', '#F59E0B'], // Blue, Red (Deferred is bad), Orange
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.raw.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94A3B8' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#F8FAFC', font: { family: 'JetBrains Mono' } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
